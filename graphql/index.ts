@@ -1,35 +1,16 @@
 import { prisma } from './generated/prisma-client';
 import { GraphQLServer } from 'graphql-yoga';
-import { request } from 'https';
+import { config } from 'dotenv';
+import { join } from 'path';
+
+import Query from './src/Query';
+import Mutation from './src/Mutation';
+
+config({ path: join(__dirname, '.env') });
 
 const resolvers = {
-  Query: {
-    publishedPosts(parent, args, context) {
-      return context.prisma.posts({ where: { published: true } });
-    },
-    post(parent, args, context) {
-      return context.prisma.post({ id: args.postId });
-    },
-    postsByUser(parent, args, context) {
-      return context.prisma
-        .user({
-          id: args.userId,
-        })
-        .posts();
-    },
-    me(parent, args, context) {
-      console.log(context.request.headers);
-      return null;
-    },
-  },
-  Mutation: {
-    createUser(parent, args, context) {
-      return context.prisma.createUser({ name: args.name });
-    },
-    signIn(parent, { email, password }, context) {
-      const user = prisma.user({ email });
-    },
-  },
+  Query,
+  Mutation: Mutation,
   User: {
     posts(parent, args, context) {
       return context.prisma
@@ -56,6 +37,7 @@ const server = new GraphQLServer({
   context: ({ request, response }) => {
     return {
       prisma,
+      response,
       request,
     };
   },

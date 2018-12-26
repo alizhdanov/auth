@@ -163,8 +163,6 @@ export type UserOrderByInput =
   | "id_DESC"
   | "email_ASC"
   | "email_DESC"
-  | "name_ASC"
-  | "name_DESC"
   | "password_ASC"
   | "password_DESC"
   | "createdAt_ASC"
@@ -205,8 +203,7 @@ export interface PostUpdateManyWithoutAuthorInput {
 }
 
 export interface UserCreateInput {
-  email?: String;
-  name: String;
+  email: String;
   password: String;
   posts?: PostCreateManyWithoutAuthorInput;
 }
@@ -235,7 +232,6 @@ export interface PostCreateInput {
 
 export interface UserUpdateManyMutationInput {
   email?: String;
-  name?: String;
   password?: String;
 }
 
@@ -250,8 +246,7 @@ export interface PostUpdateManyWithWhereNestedInput {
 }
 
 export interface UserCreateWithoutPostsInput {
-  email?: String;
-  name: String;
+  email: String;
   password: String;
 }
 
@@ -273,7 +268,6 @@ export interface PostUpdateWithoutAuthorDataInput {
 
 export interface UserUpdateInput {
   email?: String;
-  name?: String;
   password?: String;
   posts?: PostUpdateManyWithoutAuthorInput;
 }
@@ -307,20 +301,6 @@ export interface UserWhereInput {
   email_not_starts_with?: String;
   email_ends_with?: String;
   email_not_ends_with?: String;
-  name?: String;
-  name_not?: String;
-  name_in?: String[] | String;
-  name_not_in?: String[] | String;
-  name_lt?: String;
-  name_lte?: String;
-  name_gt?: String;
-  name_gte?: String;
-  name_contains?: String;
-  name_not_contains?: String;
-  name_starts_with?: String;
-  name_not_starts_with?: String;
-  name_ends_with?: String;
-  name_not_ends_with?: String;
   password?: String;
   password_not?: String;
   password_in?: String[] | String;
@@ -345,7 +325,6 @@ export interface UserWhereInput {
 
 export interface UserUpdateWithoutPostsDataInput {
   email?: String;
-  name?: String;
   password?: String;
 }
 
@@ -470,8 +449,7 @@ export interface NodeNode {
 
 export interface UserPreviousValues {
   id: ID_Output;
-  email?: String;
-  name: String;
+  email: String;
   password: String;
 }
 
@@ -480,7 +458,6 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   email: () => Promise<String>;
-  name: () => Promise<String>;
   password: () => Promise<String>;
 }
 
@@ -489,7 +466,6 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   email: () => Promise<AsyncIterator<String>>;
-  name: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
 }
 
@@ -518,15 +494,13 @@ export interface PageInfoSubscription
 
 export interface User {
   id: ID_Output;
-  email?: String;
-  name: String;
+  email: String;
   password: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   email: () => Promise<String>;
-  name: () => Promise<String>;
   password: () => Promise<String>;
   posts: <T = FragmentableArray<Post>>(
     args?: {
@@ -546,7 +520,6 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   email: () => Promise<AsyncIterator<String>>;
-  name: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   posts: <T = Promise<AsyncIterator<PostSubscription>>>(
     args?: {
