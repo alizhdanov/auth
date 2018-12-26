@@ -4,6 +4,14 @@ import { prisma } from '../generated/prisma-client';
 
 const Mutation = {
   async createUser(parent, { email, password }, context) {
+    if (!email) {
+      throw new Error('No email provided');
+    }
+
+    if (!password) {
+      throw new Error('No password provided');
+    }
+
     const hashedPassword = await hash(password, 10);
 
     return context.prisma.createUser({ email, password: hashedPassword });
@@ -26,10 +34,17 @@ const Mutation = {
     context.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60,
+      // expires: Date.now() + 60 * 60 * 1000,
     });
 
     return {
       token,
+      user,
+    };
+  },
+  async signOut() {
+    return {
+      message: 'success',
     };
   },
 };

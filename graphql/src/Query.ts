@@ -13,7 +13,11 @@ const Query = {
       .posts();
   },
   me(parent, args, context) {
-    console.log(context.request.headers);
+    if (context.request.userId) {
+      return context.prisma.user({
+        id: context.request.userId,
+      });
+    }
     return null;
   },
 };

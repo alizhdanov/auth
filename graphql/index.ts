@@ -2,6 +2,8 @@ import { prisma } from './generated/prisma-client';
 import { GraphQLServer } from 'graphql-yoga';
 import { config } from 'dotenv';
 import { join } from 'path';
+import { decode } from 'jsonwebtoken';
+// const cookieParser = require('cookie-parser');
 
 import Query from './src/Query';
 import Mutation from './src/Mutation';
@@ -43,9 +45,15 @@ const server = new GraphQLServer({
   },
 });
 
+// server.express.use(cookieParser());
+
 server.express.use(async (req, res, next) => {
   if (req.headers.authorization) {
-    return next();
+    const tokenParsed = decode(
+      req.headers.authorization.slice('Bearer '.length)
+    );
+
+    req.userId = typeof tokenParsed === 'object' ? tokenParsed.userId : null;
   }
 
   next();
