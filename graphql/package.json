@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "ts-node-dev --transpileOnly index.ts"
+    "dev": "ts-node-dev --transpileOnly index.ts",
+    "generate:types": "graphqlgen"
   },
   "license": "MIT",
   "dependencies": {
@@ -20,6 +21,8 @@
     "prisma-client-lib": "^1.23.2"
   },
   "devDependencies": {
+    "apollo": "^2.1.8",
+    "graphqlgen": "^0.4.0",
     "ts-node": "^7.0.1",
     "ts-node-dev": "^1.0.0-pre.32",
     "typescript": "^3.2.2"

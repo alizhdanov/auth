@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import Cookie from 'js-cookie';
+import { withRouter, RouteComponentProps } from 'react-router';
+import { Context } from '../App';
+import { SignUp as SignUpData, SignUpVariables } from './__generated__/SignUp';
+
+class SignUpMutation extends Mutation<SignUpData, SignUpVariables> {}
 
 const SIGN_UP = gql`
   mutation SignUp($email: String!, $password: String!) {
@@ -10,22 +16,30 @@ const SIGN_UP = gql`
   }
 `;
 
-type State = {
-  email: string;
-  password: string;
-};
-
-const SignIn = () => {
+const SignUp = ({ history }: RouteComponentProps) => {
   const [email, changeEmail] = useState('');
   const [password, changePassword] = useState('');
+  const { setAuth } = useContext(Context);
 
   return (
-    <Mutation mutation={SIGN_UP}>
-      {(signIn, { data, loading, error, called }) => (
+    <SignUpMutation mutation={SIGN_UP} variables={{ email, password }}>
+      {(SignUp, { data, loading, error, called }) => (
         <form
-          onSubmit={e => {
+          onSubmit={async e => {
             e.preventDefault();
-            signIn({ variables: { email, password } });
+            const response = await SignUp();
+            if (response) {
+              const token =
+                response.data &&
+                response.data.createUser &&
+                response.data.createUser.token;
+
+              if (token) {
+                Cookie.set('token', token);
+                setAuth(true);
+                history.push('/');
+              }
+            }
           }}
         >
           <h2>Sign Up</h2>
@@ -56,8 +70,8 @@ const SignIn = () => {
           <button type="submit">Log in</button>
         </form>
       )}
-    </Mutation>
+    </SignUpMutation>
   );
 };
 
-export default SignIn;
+export default withRouter(SignUp);

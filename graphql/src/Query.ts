@@ -1,4 +1,6 @@
-const Query = {
+import { Resolvers } from '../generated/graphqlgen';
+
+const Query: Resolvers['Query'] = {
   publishedPosts(parent, args, context) {
     return context.prisma.posts({ where: { published: true } });
   },

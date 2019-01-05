@@ -1,6 +1,10 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import SignOut from './SignOut';
+import { UserQuery as UserQueryType } from './__generated__/UserQuery';
+
+class UserQuery extends Query<UserQueryType> {}
 
 export const USER_FRAGMENT = gql`
   fragment User on User {
@@ -9,10 +13,7 @@ export const USER_FRAGMENT = gql`
 `;
 
 export const USER_QUERY = gql`
-  query User {
-    publishedPosts {
-      id
-    }
+  query UserQuery {
     me {
       ...User
     }
@@ -22,19 +23,22 @@ export const USER_QUERY = gql`
 
 const User = () => {
   return (
-    <Query query={USER_QUERY}>
+    <UserQuery query={USER_QUERY}>
       {({ loading, error, data }) => {
         if (loading) return <div>'Loading...'</div>;
         if (error) return <div>{error.toString()}</div>;
-        if (!data.me) return null;
+        if (!(data && data.me)) return null;
 
         return (
           <div>
-            <h2>User - {data.me.email}</h2>
+            <p>
+              User - <strong>{data.me.email}</strong>
+            </p>
+            <SignOut />
           </div>
         );
       }}
-    </Query>
+    </UserQuery>
   );
 };
 

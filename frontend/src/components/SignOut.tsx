@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import Cookie from 'js-cookie';
+import { Context } from '../App';
 import { USER_QUERY } from './User';
 
 const SIGN_OUT = gql`
@@ -18,6 +19,8 @@ type State = {
 };
 
 const SignIn = () => {
+  const { setAuth } = useContext(Context);
+
   return (
     <Mutation
       mutation={SIGN_OUT}
@@ -34,9 +37,9 @@ const SignIn = () => {
             e.preventDefault();
             Cookie.remove('token');
             const response = await signOut();
+            setAuth(false);
           }}
         >
-          <h2>Sign Out</h2>
           {loading && <div>Loading...</div>}
           {error && <div>{error.toString()}</div>}
           {!loading && !error && called && <div>User succesfuly sign out</div>}

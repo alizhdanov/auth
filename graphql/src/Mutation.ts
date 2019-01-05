@@ -1,8 +1,15 @@
 import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { prisma } from '../generated/prisma-client';
+import { Resolvers } from '../generated/graphqlgen';
 
-const Mutation = {
+const createToken = (id: string) => {
+  return sign({ userId: id }, process.env.APP_SECRET, {
+    expiresIn: '1m',
+  });
+};
+
+const Mutation: Resolvers['Mutation'] = {
   async createUser(parent, { email, password }, context) {
     if (!email) {
       throw new Error('No email provided');
@@ -14,7 +21,14 @@ const Mutation = {
 
     const hashedPassword = await hash(password, 10);
 
-    return context.prisma.createUser({ email, password: hashedPassword });
+    const user = context.prisma.createUser({ email, password: hashedPassword });
+
+    const token = createToken(user.id);
+
+    return {
+      token,
+      user,
+    };
   },
   async signIn(parent, { email, password }, context) {
     const user = await prisma.user({ email });
@@ -29,13 +43,7 @@ const Mutation = {
       throw new Error('Invalid password');
     }
 
-    const token = sign({ userId: user.id }, process.env.APP_SECRET);
-    // 4. Set the cookie with the token
-    context.response.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-      // expires: Date.now() + 60 * 60 * 1000,
-    });
+    const token = createToken(user.id);
 
     return {
       token,
